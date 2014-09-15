@@ -21,6 +21,8 @@ import os
 import errno
 import logging
 
+import pprint
+
 ##### START CONFIGURATION HEADER #####
 # Set to true if you want to use Sentry
 SENTRY = False
@@ -58,6 +60,7 @@ def xml2obj(src):
 
     class DataNode(object):
         def __init__(self):
+
             self._attrs = {}    # XML attributes and child elements
             self.data = None    # child text data
         def __len__(self):
@@ -164,15 +167,19 @@ def build_updateinfo(src):
             continue
 
         # Is this a security advisory?
-        if sec_dict._attrs['type'] != 'Security Advisory':
+
+        if ((  sec_dict._attrs['type'].find('Security') == -1  ) 
+         and(  sec_dict._attrs['type'].find('Bug Fix')  == -1  ) ):
             continue
+
 
         # What severity levels are we including? 
-        if 'severity' not in sec_dict._attrs:
-            continue
-        if sec_dict._attrs['severity'] not in SEVERITY:
-            continue
+        #if 'severity' not in sec_dict._attrs:
+        #    continue
+        #if sec_dict._attrs['severity'] not in SEVERITY:
+        #    continue
 
+        #print sec_dict._attrs['type']
         # More than one OS release? Generate multiple entries
         if sec_dict.os_release == None:
             sec_dict.os_release = ""
@@ -208,8 +215,16 @@ def build_updateinfo(src):
             # Place unidentifiable or uninteresting releases in an alternate updateinfo.xml
             if p_release not in RELEASES:
                 p_release = "other"
+            TYP = "none"
+            if sec_dict._attrs['type'].find( "Security") != -1:
+                TYP = "security"
+            elif sec_dict._attrs['type'].find("Bug Fix") != -1:
+                TYP = "bugfix"
+            else:
+                print sec_dict._attrs['type']
 
-            rel_fd[p_release].write('  <update from="%s" status="stable" type="security" version="1.4">\n' % UPDATE_FROM)
+            
+            rel_fd[p_release].write('  <update from="%s" status="stable" type="%s" version="1.4">\n' % ( UPDATE_FROM, TYP) )
             rel_fd[p_release].write("    <id>%s</id>\n" % i)
             rel_fd[p_release].write("    <title>%s</title>\n" % sec_dict._attrs['synopsis'])
             rel_fd[p_release].write("    <release>CentOS %s</release>\n" % p_release)
