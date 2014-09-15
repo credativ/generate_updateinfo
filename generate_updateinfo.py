@@ -1,4 +1,4 @@
-#!/usr/bin/env python26
+#!/usr/bin/env python
 #    Copyright (C) 2013  Kristian K. [http://vmfarms.com] [kris@vmfarms.com]
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import os
 import errno
 import logging
 
-import pprint
+
 
 ##### START CONFIGURATION HEADER #####
 # Set to true if you want to use Sentry
@@ -37,9 +37,6 @@ if SENTRY:
 
 # What releases would you like to track. 'other' is mandatory
 RELEASES = ['6','other']
-
-# What severity levels do we want to include
-SEVERITY = ['Critical', 'Important']
 
 # Who is this from?
 UPDATE_FROM = "you@your_domain.com"
@@ -175,14 +172,6 @@ def build_updateinfo(src):
             continue
 
 
-        # What severity levels are we including?
-        # currently unimportant 
-        #if 'severity' not in sec_dict._attrs:
-        #    continue
-        #if sec_dict._attrs['severity'] not in SEVERITY:
-        #    continue
-
-        #print sec_dict._attrs['type']
         # More than one OS release? Generate multiple entries
         if sec_dict.os_release == None:
             sec_dict.os_release = ""
