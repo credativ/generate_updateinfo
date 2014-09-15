@@ -167,13 +167,16 @@ def build_updateinfo(src):
             continue
 
         # Is this a security advisory?
-
+        
+        # Sometimes 'types'field merges multiple purposes e.g. "security and bugfix.."
+        #to make sure everything gets detected "find" is used.
         if ((  sec_dict._attrs['type'].find('Security') == -1  ) 
          and(  sec_dict._attrs['type'].find('Bug Fix')  == -1  ) ):
             continue
 
 
-        # What severity levels are we including? 
+        # What severity levels are we including?
+        # currently unimportant 
         #if 'severity' not in sec_dict._attrs:
         #    continue
         #if sec_dict._attrs['severity'] not in SEVERITY:
